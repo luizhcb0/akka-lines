@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" debug="false">
+    <property name="LOGS_FOLDER" value="/var/log/horus/microservice/lines" />
+    <property name="LOG_NAME" value="lines" />
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%class{0}] %-5level - %msg %n</Pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOGS_FOLDER}/${LOG_NAME}.log</File>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOGS_FOLDER}/old/${LOG_NAME}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} [%class{0}] %-5level - %msg %n</Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="br.com.bb.horus.microservice.lines" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="dailyRollingFileAppender"/>
+        <appender-ref ref="consoleAppender" />
+    </logger>
+
+    <logger name="br.com.bb.horus.backend.library.persistence.client" level="ERROR"/>
+    <logger name="br.com.bb.horus.component" level="DEBUG"/>
+    <logger name="org.mongodb.driver" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="dailyRollingFileAppender"/>
+        <appender-ref ref="consoleAppender" />
+    </root>
+</configuration>
